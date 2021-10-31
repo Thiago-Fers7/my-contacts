@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  margin-top: 3.2rem;
+
 `;
 
 export const Header = styled.div`
@@ -98,6 +98,30 @@ export const Card = styled.div`
     button {
       background: transparent;
       border: none;
+    }
+  }
+`;
+
+export const InputSearchContainer = styled.form`
+  margin-top: 4.9rem;
+  margin-bottom: 3.2rem;
+  width: 100%;
+
+  input {
+    width: 100%;
+    height: 5rem;
+
+    border: none;
+    border-radius: 2.5rem;
+    background: white;
+
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.04);
+
+    outline: none;
+    padding: 0 1.6rem;
+
+    ::placeholder {
+      color: #bcbcbc;
     }
   }
 `;
