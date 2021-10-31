@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-
+  position: relative;
 `;
 
 export const Header = styled.div`
@@ -102,8 +102,7 @@ export const Card = styled.div`
   }
 `;
 
-export const InputSearchContainer = styled.form`
-  margin-top: 4.9rem;
+export const InputSearchContainer = styled.div`
   margin-bottom: 3.2rem;
   width: 100%;
 

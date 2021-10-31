@@ -1,12 +1,16 @@
 import styled from 'styled-components';
 
-export const Container = styled.header`
+export const Container = styled.div`
+  margin-bottom: 2.4rem;
+
   a {
     display: flex;
     align-items: center;
 
     text-decoration: none;
     gap: .8rem;
+
+    margin-bottom: .8rem;
 
     span {
       color: ${({ theme }) => theme.colors.primary.main};

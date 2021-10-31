@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import {
   Container, Header, ListContainer, Card, InputSearchContainer,
 } from './styles';
@@ -9,13 +10,14 @@ import trash from '../../assets/images/icons/trash.svg';
 export default function Home() {
   return (
     <Container>
+
       <InputSearchContainer>
         <input type="text" placeholder="Pesquise pelo nome" />
       </InputSearchContainer>
 
       <Header>
         <strong>3 contatos</strong>
-        <a href="##">Novo contato</a>
+        <Link to="/new">Novo contato</Link>
       </Header>
 
       <ListContainer>
@@ -39,9 +41,9 @@ export default function Home() {
           </div>
 
           <div className="actions">
-            <a href="##">
+            <Link to="/edit/123">
               <img src={edit} alt="Editar" />
-            </a>
+            </Link>
 
             <button type="button">
               <img src={trash} alt="Deletar" />
@@ -61,9 +63,9 @@ export default function Home() {
           </div>
 
           <div className="actions">
-            <a href="##">
+            <Link to="/edit/123">
               <img src={edit} alt="Editar" />
-            </a>
+            </Link>
 
             <button type="button">
               <img src={trash} alt="Deletar" />
@@ -83,9 +85,9 @@ export default function Home() {
           </div>
 
           <div className="actions">
-            <a href="##">
+            <Link to="/edit/123">
               <img src={edit} alt="Editar" />
-            </a>
+            </Link>
 
             <button type="button">
               <img src={trash} alt="Deletar" />
