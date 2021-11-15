@@ -37,6 +37,7 @@ export const ListContainer = styled.header`
 
   > header {
     margin-bottom: 0.8rem;
+
     > button {
       display: flex;
       align-items: center;
@@ -48,6 +49,13 @@ export const ListContainer = styled.header`
       span {
         font-weight: bold;
         color: ${({ theme }) => theme.colors.primary.main};
+      }
+
+      img {
+        height: 1.7rem;
+        transition: 0.2s;
+
+        transform: ${({ orderBy }) => (orderBy === 'asc' && 'rotate(180deg)')};
       }
     }
   }
