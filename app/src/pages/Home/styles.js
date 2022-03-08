@@ -7,7 +7,7 @@ export const Container = styled.div`
 export const Header = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: ${({ hasError }) => (hasError ? 'flex-end' : 'space-between')};
 
   strong {
     font-size: 2.4rem;
@@ -130,5 +130,27 @@ export const InputSearchContainer = styled.div`
     ::placeholder {
       color: #bcbcbc;
     }
+  }
+`;
+
+export const ErrorContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2.4rem;
+
+  strong {
+    font-size: 2.2rem;
+    color: ${({ theme }) => theme.colors.danger.main};
+    display: block;
+  }
+
+  button {
+    margin-top: 0.8rem;
+    width: min-content;
+  }
+
+  & > img {
+    height: 8.4rem;
+    width: 8.4rem;
   }
 `;

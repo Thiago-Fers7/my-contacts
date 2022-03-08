@@ -3,6 +3,8 @@ import styled, { css } from 'styled-components';
 export default styled.button`
   width: 100%;
   height: 5.2rem;
+  padding: 0 1.6rem;
+  white-space: nowrap;
 
   border: none;
   border-radius: 0.4rem;
@@ -31,14 +33,14 @@ export default styled.button`
   }
 
   ${({ danger, theme }) => danger && css`
-    background: ${theme.colors.danger.main}};
+    background: ${theme.colors.danger.main};
 
     :hover {
-      background: ${theme.colors.danger.light}}};
+      background: ${theme.colors.danger.light};
     }
 
     :active {
-      background: ${theme.colors.danger.dark}}};
+      background: ${theme.colors.danger.dark};
     }
   `}
 `;
