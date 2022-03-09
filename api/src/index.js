@@ -14,4 +14,6 @@ app.use(routes);
 // Error handler (middleware para tratar erros que o express detectar em todo o programa) para metódos não assíncronos
 app.use(errorHandler);
 
-app.listen(3333, () => console.log('Server started at http://locahost:3333'));
+const PORT = 3333;
+
+app.listen(PORT, () => console.log(`🔥 Server started at http://locahost:${PORT}`));
