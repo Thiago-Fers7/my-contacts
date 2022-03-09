@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import {
+  useEffect, useMemo, useState, useCallback,
+} from 'react';
 import { Link } from 'react-router-dom';
 
 import formatPhone from '../../utils/formatPhone';
@@ -28,25 +30,32 @@ export default function Home() {
     contact.name.toLowerCase().includes(searchTerm.toLowerCase())
   )), [contacts, searchTerm]);
 
+  const loadContacts = useCallback(async () => {
+    try {
+      setIsLoading(true);
+
+      const contactsList = await ContactsService.listContacts(orderBy);
+
+      setHasError(false);
+      setContacts(contactsList);
+    } catch (error) {
+      setHasError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [orderBy]);
+
+  useEffect(() => {
+    loadContacts();
+  }, [loadContacts]);
+
   function handleChangeSearchTerm(event) {
     setSearchTerm(event.target.value);
   }
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setIsLoading(true);
-
-        const contactsList = await ContactsService.listContacts(orderBy);
-
-        setContacts(contactsList);
-      } catch (error) {
-        setHasError(true);
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-  }, [orderBy]);
+  function handleTryAgain() {
+    loadContacts();
+  }
 
   return (
     <Container>
@@ -79,52 +88,54 @@ export default function Home() {
 
             <div className="details">
               <strong>Ocorreu um erro ao obter os seus contatos!</strong>
-              <Button>Tente novamente</Button>
+              <Button onClick={handleTryAgain}>Tente novamente</Button>
             </div>
           </ErrorContainer>
         </>
       )}
 
-      <ListContainer orderBy={orderBy}>
-        <header>
-          {!!filteredContacts.length && (
-            <button
-              type="button"
-              onClick={() => setOrderBy((prevState) => (prevState === 'asc' ? 'desc' : 'asc'))}
-            >
-              <span>Nome</span>
-              {' '}
-              <img src={arrow} alt="Ordenação" />
-            </button>
-          )}
-        </header>
+      {!hasError && (
+        <ListContainer orderBy={orderBy}>
+          <header>
+            {!!filteredContacts.length && (
+              <button
+                type="button"
+                onClick={() => setOrderBy((prevState) => (prevState === 'asc' ? 'desc' : 'asc'))}
+              >
+                <span>Nome</span>
+                {' '}
+                <img src={arrow} alt="Ordenação" />
+              </button>
+            )}
+          </header>
 
-        {filteredContacts.map((contact) => (
-          <Card key={contact.id}>
-            <div className="info">
-              <div>
-                <strong>{contact.name}</strong>
-                {contact.category_name && (
-                  <small>{contact.category_name}</small>
-                )}
+          {filteredContacts.map((contact) => (
+            <Card key={contact.id}>
+              <div className="info">
+                <div>
+                  <strong>{contact.name}</strong>
+                  {contact.category_name && (
+                    <small>{contact.category_name}</small>
+                  )}
+                </div>
+
+                <span>{contact.email}</span>
+                <span>{formatPhone(contact.phone)}</span>
               </div>
 
-              <span>{contact.email}</span>
-              <span>{formatPhone(contact.phone)}</span>
-            </div>
+              <div className="actions">
+                <Link to={`/edit/${contacts.id}`}>
+                  <img src={edit} alt="Editar" />
+                </Link>
 
-            <div className="actions">
-              <Link to={`/edit/${contacts.id}`}>
-                <img src={edit} alt="Editar" />
-              </Link>
-
-              <button type="button">
-                <img src={trash} alt="Deletar" />
-              </button>
-            </div>
-          </Card>
-        ))}
-      </ListContainer>
+                <button type="button">
+                  <img src={trash} alt="Deletar" />
+                </button>
+              </div>
+            </Card>
+          ))}
+        </ListContainer>
+      )}
     </Container>
   );
 }
