@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import {
   useEffect, useMemo, useState, useCallback,
 } from 'react';
@@ -11,13 +12,22 @@ import Button from '../../components/Button';
 import ContactsService from '../../services/ContactsService';
 
 import {
-  Container, Header, ListContainer, Card, InputSearchContainer, ErrorContainer,
+  Container,
+  Header,
+  ListContainer,
+  Card,
+  InputSearchContainer,
+  ErrorContainer,
+  EmptyListContainer,
+  SearchNotFoundContainer,
 } from './styles';
 
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
 import sad from '../../assets/images/icons/sad.svg';
+import emptyBox from '../../assets/images/icons/empty-box.svg';
+import magnifierQuestion from '../../assets/images/icons/magnifier-question.svg';
 
 export default function Home() {
   const [contacts, setContacts] = useState([]);
@@ -35,6 +45,7 @@ export default function Home() {
       setIsLoading(true);
 
       const contactsList = await ContactsService.listContacts(orderBy);
+      // const contactsList = []; await ContactsService.listContacts(orderBy);
 
       setHasError(false);
       setContacts(contactsList);
@@ -61,17 +72,29 @@ export default function Home() {
     <Container>
       <Loader isLoading={isLoading} />
 
-      <InputSearchContainer>
-        <input
-          type="text"
-          placeholder="Pesquise pelo nome"
-          value={searchTerm}
-          onChange={handleChangeSearchTerm}
-        />
-      </InputSearchContainer>
+      {contacts.length > 0 && (
+        <InputSearchContainer>
+          <input
+            type="text"
+            placeholder="Pesquise pelo nome"
+            value={searchTerm}
+            onChange={handleChangeSearchTerm}
+          />
+        </InputSearchContainer>
+      )}
 
-      <Header hasError={hasError}>
-        {!hasError && (
+      <Header justifyContent={
+        // eslint-disable-next-line no-nested-ternary
+        hasError
+          ? 'flex-end'
+          : (
+            contacts.length > 0
+              ? 'space-between'
+              : 'center'
+          )
+      }
+      >
+        {(!hasError && contacts.length > 0) && (
           <strong>
             {filteredContacts.length}
             {filteredContacts.length === 1 ? ' contato' : ' contatos'}
@@ -80,22 +103,43 @@ export default function Home() {
         <Link to="/new">Novo contato</Link>
       </Header>
 
-      {hasError && (
-        <>
-          <Divisor marginY="1.6rem" />
-          <ErrorContainer>
-            <img src={sad} alt="Sad" />
+      <Divisor marginY="1.6rem" />
 
-            <div className="details">
-              <strong>Ocorreu um erro ao obter os seus contatos!</strong>
-              <Button onClick={handleTryAgain}>Tente novamente</Button>
-            </div>
-          </ErrorContainer>
-        </>
+      {hasError && (
+        <ErrorContainer>
+          <img src={sad} alt="Sad" />
+
+          <div className="details">
+            <strong>Ocorreu um erro ao obter os seus contatos!</strong>
+            <Button onClick={handleTryAgain}>Tente novamente</Button>
+          </div>
+        </ErrorContainer>
       )}
 
-      {!hasError && (
+      {(!hasError && !isLoading) && (
         <ListContainer orderBy={orderBy}>
+          {contacts.length < 1 && (
+            <EmptyListContainer>
+              <img src={emptyBox} alt="Empty box" />
+
+              <p>
+                Você ainda não tem nenhum contato cadastrado! <br />
+                Clique no botão <strong>&ldquo;Novo contato&rdquo;</strong> à
+                cima para cadastrar o seu primeiro!
+              </p>
+            </EmptyListContainer>
+          )}
+
+          {(contacts.length > 0 && filteredContacts < 1) && (
+            <SearchNotFoundContainer>
+              <img src={magnifierQuestion} alt="Magnifier question" />
+
+              <span>
+                Nenhum resultado foi encontrado para <strong>&ldquo;{searchTerm}&rdquo;</strong>.
+              </span>
+            </SearchNotFoundContainer>
+          )}
+
           <header>
             {!!filteredContacts.length && (
               <button

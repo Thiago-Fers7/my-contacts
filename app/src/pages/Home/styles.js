@@ -7,7 +7,7 @@ export const Container = styled.div`
 export const Header = styled.div`
   display: flex;
   align-items: center;
-  justify-content: ${({ hasError }) => (hasError ? 'flex-end' : 'space-between')};
+  justify-content: ${({ justifyContent }) => justifyContent};
 
   strong {
     font-size: 2.4rem;
@@ -57,6 +57,25 @@ export const ListContainer = styled.header`
 
         transform: ${({ orderBy }) => (orderBy === 'asc' && 'rotate(180deg)')};
       }
+    }
+  }
+`;
+
+export const EmptyListContainer = styled.div`
+  img {
+    height: 7.7rem;
+    width: 11rem;
+    display: block;
+    margin: 0 auto;
+  }
+
+  p {
+    margin-top: 0.8rem;
+    text-align: center;
+    color: ${({ theme }) => theme.colors.gray[200]};
+
+    strong {
+      color: ${({ theme }) => theme.colors.primary.main}
     }
   }
 `;
@@ -152,5 +171,16 @@ export const ErrorContainer = styled.div`
   & > img {
     height: 8.4rem;
     width: 8.4rem;
+  }
+`;
+
+export const SearchNotFoundContainer = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 2.4rem;
+
+  span {
+    color: ${({ theme }) => theme.colors.gray[200]};
+    word-break: break-word;
   }
 `;
