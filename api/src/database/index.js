@@ -10,7 +10,7 @@ const client = new Client({
 
 client.connect();
 
-; (async () => {
+(async () => {
   await client.query(
     `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -26,7 +26,7 @@ client.connect();
         phone VARCHAR,
         category_id UUID,
         FOREIGN KEY(category_id) REFERENCES categories(id)
-    );`
+    );`,
   );
 })();
 

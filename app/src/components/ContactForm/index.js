@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FormGroup from '../FormGroup';
 import { Form, ButtonContainer } from './styles';
 
 import isEmailValid from '../../utils/isEmailValid';
 import formatPhone from '../../utils/formatPhone';
+import categoriesService from '../../services/CategoriesService';
 
 import Input from '../Input';
 import Select from '../Select';
@@ -15,13 +16,28 @@ export default function ContactForm({ buttonLabel }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [category, setCategory] = useState('');
+  const [categoryId, setCategoryId] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
   const {
     setError, removeError, getErrorMessageByFieldName, errors,
   } = useErros();
 
   const isFormValid = (name && !errors.length);
+
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const categoriesList = await categoriesService.listCategories();
+        setCategories(categoriesList);
+      } catch {} finally {
+        setIsLoadingCategories(false);
+      }
+    }
+
+    loadCategories();
+  }, []);
 
   function handleNameChange(e) {
     setName(e.target.value);
@@ -86,12 +102,17 @@ export default function ContactForm({ buttonLabel }) {
         />
       </FormGroup>
 
-      <FormGroup>
+      <FormGroup isLoading={isLoadingCategories}>
         <Select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value)}
+          disabled={isLoadingCategories}
         >
-          <option value="Instagram">Instagram</option>
+          <option value="">Sem categoria</option>
+
+          {!!categories.length && categories.map((categoryf) => (
+            <option key={categoryf.id} value={categoryf.id}>{categoryf.name}</option>
+          ))}
         </Select>
       </FormGroup>
 

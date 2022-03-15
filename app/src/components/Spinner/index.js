@@ -1,0 +1,10 @@
+import PropTypes from 'prop-types';
+import { StyledSpinner } from './style';
+
+export default function Spinner({ size }) {
+  return <StyledSpinner size={size} />;
+}
+
+Spinner.propTypes = {
+  size: PropTypes.string.isRequired,
+};
