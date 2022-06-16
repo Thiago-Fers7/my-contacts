@@ -1,18 +1,19 @@
 const { Client } = require('pg');
+const sql = require('sql-tagged-template-literal');
 
 const client = new Client({
   host: 'localhost',
   port: 5432,
   user: 'root',
   password: 'root',
-  database: 'mycontacts',
+  database: 'postgres',
 });
 
 client.connect();
 
 (async () => {
   await client.query(
-    `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+    sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
     CREATE TABLE IF NOT EXISTS categories (
         id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
