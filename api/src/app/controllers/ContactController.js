@@ -43,16 +43,18 @@ class ContactController {
       return response.status(400).json({ error: 'Invalid category ID' });
     }
 
-    const contactExists = await ContactsRepository.findByEmail(email);
+    if (email) {
+      const contactExists = await ContactsRepository.findByEmail(email);
 
-    if (contactExists) {
-      return response.status(400).json({ error: 'This e-mail is already in use' });
+      if (contactExists) {
+        return response.status(400).json({ error: 'This e-mail is already in use' });
+      }
     }
 
     const contact = await ContactsRepository.create({
       name,
       phone,
-      email,
+      email: email || null,
       category_id: category_id || null,
     });
 
@@ -83,15 +85,17 @@ class ContactController {
       return response.status(404).json({ error: 'Contact not found' });
     }
 
-    const contactByEmail = await ContactsRepository.findByEmail(email);
-    if (contactByEmail && contactByEmail.id !== id) {
-      return response.status(400).json({ error: 'This e-mail is already in use' });
+    if (email) {
+      const contactByEmail = await ContactsRepository.findByEmail(email);
+      if (contactByEmail && contactByEmail.id !== id) {
+        return response.status(400).json({ error: 'This e-mail is already in use' });
+      }
     }
 
     const contact = await ContactsRepository.update(id, {
       name,
       phone,
-      email,
+      email: email || null,
       category_id: category_id || null,
     });
 
@@ -101,6 +105,10 @@ class ContactController {
   // Deletar um registro
   async delete(request, response) {
     const { id } = request.params;
+
+    if (!isValidUUID(id)) {
+      return response.status(400).json({ error: 'Invalid contact ID' });
+    }
 
     await ContactsRepository.delete((id));
 
