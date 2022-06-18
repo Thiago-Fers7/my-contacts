@@ -1,10 +1,11 @@
+const sql = require('sql-tagged-template-literal');
 const db = require('../../database');
 
 class ContactsRepository {
   async findAll(orderBy = 'ASC') {
     const direction = orderBy.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
 
-    const rows = await db.query(`
+    const rows = await db.query(sql`
         SELECT contacts.*, categories.name AS category_name
         FROM contacts
         LEFT JOIN categories ON categories.id = contacts.category_id
@@ -15,7 +16,7 @@ class ContactsRepository {
   }
 
   async findByEmail(email) {
-    const [row] = await db.query(`
+    const [row] = await db.query(sql`
         SELECT
             *
         FROM
@@ -27,7 +28,7 @@ class ContactsRepository {
   }
 
   async findById(id) {
-    const [row] = await db.query(`
+    const [row] = await db.query(sql`
         SELECT
             contacts.*,
             categories.name AS category_name
@@ -43,7 +44,7 @@ class ContactsRepository {
   async create({
     name, email, phone, category_id,
   }) {
-    const [row] = await db.query(`
+    const [row] = await db.query(sql`
         INSERT INTO contacts (name, email, phone, category_id)
             VALUES ($1, $2, $3, $4)
         RETURNING
@@ -56,7 +57,7 @@ class ContactsRepository {
   async update(id, {
     name, phone, category_id, email,
   }) {
-    const [row] = await db.query(`
+    const [row] = await db.query(sql`
         UPDATE
             contacts
         SET
@@ -74,7 +75,7 @@ class ContactsRepository {
   }
 
   async delete(id) {
-    const deleteOp = await db.query(`
+    const deleteOp = await db.query(sql`
         DELETE FROM contacts
         WHERE id = $1
     `, [id]);
