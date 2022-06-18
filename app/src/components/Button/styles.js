@@ -1,10 +1,14 @@
 import styled, { css } from 'styled-components';
 
-export default styled.button`
+export const StyledButton = styled.button`
   width: 100%;
   height: 5.2rem;
   padding: 0 1.6rem;
   white-space: nowrap;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   border: none;
   border-radius: 0.4rem;
