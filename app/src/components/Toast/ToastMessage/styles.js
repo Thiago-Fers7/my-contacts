@@ -23,6 +23,10 @@ export const Container = styled.div`
   justify-content: center;
   gap: 0.8rem;
 
+  width: min-content;
+  white-space: nowrap;
+  margin: 0 auto;
+
   ${({ type }) => containerVariants[type] || containerVariants.default}
 
   & + & {
