@@ -22,6 +22,7 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
+  cursor: pointer;
 
   width: min-content;
   white-space: nowrap;
