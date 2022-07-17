@@ -14,7 +14,7 @@ export default function NewContact() {
       const response = await ContactsService.createContact(contact);
 
       console.log(response);
-      toast({ type: 'success', text: 'Contato criado com sucesso' });
+      toast({ type: 'success', text: 'Contato criado com sucesso', duration: 3000 });
     } catch {
       toast({ type: 'error', text: 'Erro ao cadastrar contato' });
     }
