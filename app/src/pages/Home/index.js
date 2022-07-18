@@ -168,11 +168,7 @@ export default function Home() {
               </div>
 
               <div className="actions">
-                <Link to={{
-                  pathname: `/edit/${contact.id}`,
-                  state: { contact },
-                }}
-                >
+                <Link to={`/edit/${contact.id}`}>
                   <img src={edit} alt="Editar" />
                 </Link>
 
