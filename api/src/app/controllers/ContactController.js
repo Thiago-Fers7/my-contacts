@@ -26,7 +26,7 @@ class ContactController {
       return response.status(404).json({ error: 'Contact not found' });
     }
 
-    response.status(401).json(contact);
+    response.status(200).json(contact);
   }
 
   // Criar novo registro
