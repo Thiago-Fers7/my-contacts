@@ -10,6 +10,7 @@ import Loader from '../../components/Loader';
 import Divisor from '../../components/Divisor';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
+import toast from '../../utils/toast';
 import ContactsService from '../../services/ContactsService';
 
 import {
@@ -38,6 +39,7 @@ export default function Home() {
   const [hasError, setHasError] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [contactBeingDeleted, setContactBeingDeleted] = useState(null);
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
   const filteredContacts = useMemo(() => contacts.filter((contact) => (
     contact.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -48,7 +50,6 @@ export default function Home() {
       setIsLoading(true);
 
       const contactsList = await ContactsService.listContacts(orderBy);
-      // const contactsList = []; await ContactsService.listContacts(orderBy);
 
       setHasError(false);
       setContacts(contactsList);
@@ -78,10 +79,31 @@ export default function Home() {
 
   function handleCloseDeleteModal() {
     setIsDeleteModalVisible(false);
+    setContactBeingDeleted(null);
   }
 
-  function handleConfirmDeleteContact() {
-    console.log(contactBeingDeleted.id);
+  async function handleConfirmDeleteContact() {
+    try {
+      setIsLoadingDelete(true);
+
+      await ContactsService.deleteContact(contactBeingDeleted.id);
+
+      setContacts((prev) => prev.filter((contact) => contact.id !== contactBeingDeleted.id));
+
+      handleCloseDeleteModal();
+
+      toast({
+        type: 'success',
+        text: 'Contato excluído com sucesso!',
+      });
+    } catch {
+      toast({
+        type: 'error',
+        text: 'Ocorreu um erro ao excluir o contato!',
+      });
+    } finally {
+      setIsLoadingDelete(false);
+    }
   }
 
   return (
@@ -95,6 +117,7 @@ export default function Home() {
         onCancel={handleCloseDeleteModal}
         onConfirm={handleConfirmDeleteContact}
         visible={isDeleteModalVisible}
+        isLoading={isLoadingDelete}
       >
         <p>
           Esta ação não poderá ser desfeita!

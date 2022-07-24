@@ -26,6 +26,10 @@ class ContactsService {
       `/contacts/${id}`, { body: contact },
     );
   }
+
+  deleteContact(id) {
+    return this.HttpClient.delete(`/contacts/${id}`);
+  }
 }
 
 export default new ContactsService();

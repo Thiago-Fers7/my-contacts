@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Overlay = styled.div`
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   left: 0;
@@ -52,6 +52,10 @@ export const Footer = styled.div`
       border: none;
       font-size: 1.6rem;
       color: ${({ theme }) => theme.colors.gray[200]};
+
+      :disabled {
+        cursor: not-allowed;
+      }
     }
 
     :last-child {
