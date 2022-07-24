@@ -9,6 +9,7 @@ import formatPhone from '../../utils/formatPhone';
 import Loader from '../../components/Loader';
 import Divisor from '../../components/Divisor';
 import Button from '../../components/Button';
+import Modal from '../../components/Modal';
 import ContactsService from '../../services/ContactsService';
 
 import {
@@ -35,6 +36,8 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [contactBeingDeleted, setContactBeingDeleted] = useState(null);
 
   const filteredContacts = useMemo(() => contacts.filter((contact) => (
     contact.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -68,9 +71,35 @@ export default function Home() {
     loadContacts();
   }
 
+  function handleDeleteContact(contact) {
+    setIsDeleteModalVisible(true);
+    setContactBeingDeleted(contact);
+  }
+
+  function handleCloseDeleteModal() {
+    setIsDeleteModalVisible(false);
+  }
+
+  function handleConfirmDeleteContact() {
+    console.log(contactBeingDeleted.id);
+  }
+
   return (
     <Container>
       <Loader isLoading={isLoading} />
+
+      <Modal
+        danger
+        title={`Tem certeza que deseja remover o contato "${contactBeingDeleted?.name}"?`}
+        confirmLabel="Deletar"
+        onCancel={handleCloseDeleteModal}
+        onConfirm={handleConfirmDeleteContact}
+        visible={isDeleteModalVisible}
+      >
+        <p>
+          Esta ação não poderá ser desfeita!
+        </p>
+      </Modal>
 
       {contacts.length > 0 && (
         <InputSearchContainer>
@@ -172,7 +201,7 @@ export default function Home() {
                   <img src={edit} alt="Editar" />
                 </Link>
 
-                <button type="button">
+                <button type="button" onClick={() => handleDeleteContact(contact)}>
                   <img src={trash} alt="Deletar" />
                 </button>
               </div>
