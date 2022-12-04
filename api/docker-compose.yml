@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+    postgres:
+        container_name: my-contacts-postgres
+        image: postgres
+        restart: unless-stopped
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: root
+        networks:
+            - my-contacts-network
+    app:
+        container_name: my-contacts-app
+        image: my-contacts-app
+        links:
+            - postgres
+        command: yarn dev
+        build:
+            context: .
+            dockerfile: ./node.Dockerfile
+        ports:
+            - "3333:3333"
+        volumes:
+            - .:/usr/src/app
+            - /usr/src/app/node_modules
+        networks:
+            - my-contacts-network
+
+volumes:
+    db:
+
+
+networks:
+    my-contacts-network:
+        name: my-contacts-network
