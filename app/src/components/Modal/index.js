@@ -6,12 +6,12 @@ import Button from '../Button';
 import ReactPortal from '../ReactPortal';
 
 export default function Modal({
-  danger,
+  danger = false,
   title,
   children,
-  cancelLabel,
-  isLoading,
-  confirmLabel,
+  cancelLabel = 'Cancelar',
+  isLoading = false,
+  confirmLabel = 'Confirmar',
   onCancel,
   onConfirm,
   visible,
@@ -50,11 +50,4 @@ Modal.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
-};
-
-Modal.defaultProps = {
-  danger: false,
-  isLoading: false,
-  cancelLabel: 'Cancelar',
-  confirmLabel: 'Confirmar',
 };
