@@ -1,6 +1,6 @@
 module.exports = (req, res, next) => {
   const allowedOrigins = [
-    'http://localhost:3010',
+    'http://localhost:3000',
   ]
 
   const origin = req.header('Origin')
