@@ -1,10 +1,8 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 import {
-  useEffect, useMemo, useState, useCallback,
+  useEffect, useMemo, useState, useCallback, useTransition,
 } from 'react';
 import { Link } from 'react-router-dom';
-
-import formatPhone from '../../utils/formatPhone';
 
 import Loader from '../../components/Loader';
 import Divisor from '../../components/Divisor';
@@ -17,33 +15,34 @@ import {
   Container,
   Header,
   ListContainer,
-  Card,
   InputSearchContainer,
   ErrorContainer,
   EmptyListContainer,
   SearchNotFoundContainer,
 } from './styles';
 
-import arrow from '../../assets/images/icons/arrow.svg';
-import edit from '../../assets/images/icons/edit.svg';
-import trash from '../../assets/images/icons/trash.svg';
 import sad from '../../assets/images/icons/sad.svg';
 import emptyBox from '../../assets/images/icons/empty-box.svg';
 import magnifierQuestion from '../../assets/images/icons/magnifier-question.svg';
+import ContactsList from '../../components/ContactsList';
 
 export default function Home() {
   const [contacts, setContacts] = useState([]);
   const [orderBy, setOrderBy] = useState('asc');
-  const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [contactBeingDeleted, setContactBeingDeleted] = useState(null);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [DeferredSearchTerm, setDeferredSearchTerm] = useState('');
+
+  const [isPending, startTransition] = useTransition();
+
   const filteredContacts = useMemo(() => contacts.filter((contact) => (
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )), [contacts, searchTerm]);
+    contact.name.toLowerCase().includes(DeferredSearchTerm.toLowerCase())
+  )), [contacts, DeferredSearchTerm]);
 
   const loadContacts = useCallback(async () => {
     try {
@@ -65,22 +64,31 @@ export default function Home() {
   }, [loadContacts]);
 
   function handleChangeSearchTerm(event) {
-    setSearchTerm(event.target.value);
+    const { value } = event.target;
+    setSearchTerm(value);
+
+    startTransition(() => {
+      setDeferredSearchTerm(value);
+    });
   }
 
   function handleTryAgain() {
     loadContacts();
   }
 
-  function handleDeleteContact(contact) {
+  const handleDeleteContact = useCallback((contact) => {
     setIsDeleteModalVisible(true);
     setContactBeingDeleted(contact);
-  }
+  }, []);
 
   function handleCloseDeleteModal() {
     setIsDeleteModalVisible(false);
     setContactBeingDeleted(null);
   }
+
+  const handleOrderBy = useCallback(() => {
+    setOrderBy((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+  }, []);
 
   async function handleConfirmDeleteContact() {
     try {
@@ -157,6 +165,8 @@ export default function Home() {
 
       <Divisor marginY="1.6rem" />
 
+      {isPending && <h1>Carregando...</h1>}
+
       {hasError && (
         <ErrorContainer>
           <img src={sad} alt="Sad" />
@@ -182,7 +192,7 @@ export default function Home() {
             </EmptyListContainer>
           )}
 
-          {(contacts.length > 0 && filteredContacts < 1) && (
+          {(contacts.length > 0 && filteredContacts.length < 1) && (
             <SearchNotFoundContainer>
               <img src={magnifierQuestion} alt="Magnifier question" />
 
@@ -192,44 +202,11 @@ export default function Home() {
             </SearchNotFoundContainer>
           )}
 
-          <header>
-            {!!filteredContacts.length && (
-              <button
-                type="button"
-                onClick={() => setOrderBy((prevState) => (prevState === 'asc' ? 'desc' : 'asc'))}
-              >
-                <span>Nome</span>
-                {' '}
-                <img src={arrow} alt="Ordenação" />
-              </button>
-            )}
-          </header>
-
-          {filteredContacts.map((contact) => (
-            <Card key={contact.id}>
-              <div className="info">
-                <div>
-                  <strong>{contact.name}</strong>
-                  {contact.category_name && (
-                    <small>{contact.category_name}</small>
-                  )}
-                </div>
-
-                <span>{contact.email}</span>
-                <span>{formatPhone(contact.phone)}</span>
-              </div>
-
-              <div className="actions">
-                <Link to={`/edit/${contact.id}`}>
-                  <img src={edit} alt="Editar" />
-                </Link>
-
-                <button type="button" onClick={() => handleDeleteContact(contact)}>
-                  <img src={trash} alt="Deletar" />
-                </button>
-              </div>
-            </Card>
-          ))}
+          <ContactsList
+            filteredContacts={filteredContacts}
+            handleDeleteContact={handleDeleteContact}
+            handleOrderBy={handleOrderBy}
+          />
         </ListContainer>
       )}
     </Container>
