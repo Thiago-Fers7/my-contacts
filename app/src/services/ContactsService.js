@@ -13,7 +13,7 @@ class ContactsService {
   }
 
   async getContactById(id) {
-    await delay(5000);
+    await delay(500);
     return this.HttpClient.get(`/contacts/${id}`);
   }
 
