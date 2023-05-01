@@ -35,7 +35,7 @@ const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
       setName(contact.name ?? '');
       setEmail(contact.email ?? '');
       setPhone(formatPhone(contact.phone ?? ''));
-      setCategoryId(contact.categoryId ?? '');
+      setCategoryId(contact.category.id ?? '');
     },
     resetFields() {
       setName('');
@@ -139,8 +139,8 @@ const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
         >
           <option value="">Sem categoria</option>
 
-          {!!categories.length && categories.map((categoryf) => (
-            <option key={categoryf.id} value={categoryf.id}>{categoryf.name}</option>
+          {!!categories.length && categories.map((category) => (
+            <option key={category.id} value={category.id}>{category.name}</option>
           ))}
         </Select>
       </FormGroup>

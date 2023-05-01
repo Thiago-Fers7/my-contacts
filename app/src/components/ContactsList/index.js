@@ -33,8 +33,8 @@ function ContactsList({
           <div className="info">
             <div>
               <strong>{contact.name}</strong>
-              {contact.category_name && (
-                <small>{contact.category_name}</small>
+              {contact.category.name && (
+                <small>{contact.category.name}</small>
               )}
             </div>
 
@@ -63,8 +63,10 @@ ContactsList.propTypes = {
     name: PropTypes.string.isRequired,
     email: PropTypes.string,
     phone: PropTypes.string,
-    category_id: PropTypes.number,
-    category_name: PropTypes.string,
+    category: {
+      id: PropTypes.number,
+      name: PropTypes.string,
+    },
   })).isRequired,
   handleOrderBy: PropTypes.func.isRequired,
   handleDeleteContact: PropTypes.func.isRequired,
